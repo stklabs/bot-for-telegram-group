@@ -1,0 +1,10 @@
+# docker-compose.yml
+services:
+  bot:
+    build: .
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CHAT_ID=${CHAT_ID}
+      - nwc_uri=${nwc_uri}
+    volumes:
+      - ./data:/data
