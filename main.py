@@ -54,7 +54,9 @@ async def link_command(message: Message):
                 user_id = message.from_user.id
                 save_ln_address(user_id, username, valid_ln_address[0])
                 await message.reply(f"✅ Endereço de pagamento cadastrado com "
-                                    f"sucesso: {valid_ln_address[0]}")
+                                    f"sucesso: {valid_ln_address[0]}\n"
+                                    f"Para participar dos nossos sorteios,"
+                                    f" faça o /check_in semanal.")
             else:
                 await message.reply("❌ Nenhum Endereço valido detectado!\n"
                                     "Por favor tente novamente com outro endereço!")
