@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql.expression import func
 
 
-engine = create_engine("sqlite:///./data/bot.db", echo=False)
+engine = create_engine("sqlite:///data/bot.db", echo=False)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
