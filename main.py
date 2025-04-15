@@ -94,8 +94,10 @@ async def check_in_command(message: Message):
         )
     else:
         await message.reply(
-            f"🔗 Vincule seu Endereço de recebimento com /vincular e seu LNAddress "
-            "antes de fazer o check-in!"
+            "🔗 Vincule seu endereço lightning (Lnaddees) de alguma "
+            "carteira compatível para poder participar.\n\n"
+            "Como fazer: passe o comando /vincular + seu endereço lightning.\n\n"
+            "Ex: /vincular seuendereco@lnaddress.com"
         )
 
 
