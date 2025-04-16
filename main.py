@@ -65,7 +65,7 @@ async def link_command(message: Message):
 
 @dp.message(Command("info"))
 async def info_command(message: Message):
-    msg = ("⚠️INFORMAÇÕES | FREE SATS"
+    msg = ("⚠️INFORMAÇÕES | FREE SATS\n"
            f"🗓 Sorteio {sort_day_text}, dia {next_saturday()} às 20:00 UTC:\n"
            f"👥 Número de participantes: {count_checkins()}\n\n"
            f"⚡️Prêmio: {setup.prize_amount} sats\n"
