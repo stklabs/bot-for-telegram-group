@@ -11,7 +11,6 @@ from scheduler.trigger import *
 from datetime import timezone, timedelta, time, date, datetime
 from payment import send_prize, is_valid_ln_address
 
-
 bot = Bot(token=setup.BOT_TOKEN)
 dp = Dispatcher()
 
@@ -66,18 +65,45 @@ async def link_command(message: Message):
 
 @dp.message(Command("info"))
 async def info_command(message: Message):
-    user_id = message.from_user.id
-    msg = f"🗓 Sorteio {sort_day_text}, dia {next_saturday()} às 20:00 UTC:\n"
-    msg += f"👥 Número de pessoas participando: {count_checkins()}\n\n"
-    checked = is_checked(user_id)
-    if checked is None:
-        msg += f"\n🔗 Vincule seu Endereço de recebimento com /vincular e seu LNAddress"
-    if checked is False:
-        msg += (f"☑️ Faça o Check-in com o comando /check_in "
-                "para participar do sorteio dessa semana!\n")
-    if ln_address := get_ln_address(user_id):
-        msg += f"\nSeu endereço de recebimento é {ln_address}"
+    msg = ("⚠️INFORMAÇÕES | FREE SATS"
+           f"🗓 Sorteio {sort_day_text}, dia {next_saturday()} às 20:00 UTC:\n"
+           f"👥 Número de participantes: {count_checkins()}\n\n"
+           f"⚡️Prêmio: {setup.prize_amount} sats\n"
+           "\n---\n\n"
+           "1️⃣ Vincular endereço\n"
+           "Vincule seu endereço lightning (Lnaddees) de alguma carteira "
+           "compatível para poder participar.\n\n"
+           "Como fazer: passe o comando /vincular + seu endereço lightning.\n\n"
+           "Ex: /vincular seuendereco@lnaddress.com\n\n"
+           "2️⃣ Faça o Check in semanal\n\n"
+           "Após vincular seu endereço, passe o comando /check_in para "
+           "participar do sorteio semanal.\n"
+           "\n---\n\n"
+           "📝 Lista de comandos:\n"
+           "🔗 /vincular + LNAddress : configura um endereço de recebimento para seu usuario\n"
+           "ℹ️ /info : Mostra informações\n"
+           "☑️ /check_in : Valida sua participação no sorteio da semana atual\n"
+           "🤖 /bot : Mostra mensagem de boas vindas\n"
+           "⌨️ /comandos : Mostra os comandos do bot\n"
+           "👤 /perfil : Exibe seu endereço cadastrado para recebimento\n")
     await message.reply(msg)
+
+
+@dp.message(Command("perfil"))
+async def info_command(message: Message):
+    user_id = message.from_user.id
+    if ln_address := get_ln_address(user_id):
+        msg = ("🔸Seus dados cadastrados\n\n"
+               f"Lnaddress: {ln_address}")
+        if is_checked(user_id) is False:
+            msg += (f"\n\n☑️ Faça o Check-in com o comando /check_in "
+                    "para participar do sorteio dessa semana!\n")
+        await message.reply(msg)
+
+    else:
+        await message.reply("Você ainda não tem perfil!\n "
+                            "Siga o passo a passo descrito em /info "
+                            "para ter seu perfil.")
 
 
 @dp.message(Command("check_in"))
@@ -109,7 +135,8 @@ async def commands_command(message: Message):
         "ℹ️ /info : Mostra informações sobre o proximo sorteio\n"
         "☑️ /check_in : Valida sua participação no sorteio da semana atual\n"
         "🤖 /bot : Mostra mensagem de boas vindas\n"
-        "⌨️ /comandos : Mostra os comandos do bot"
+        "⌨️ /comandos : Mostra os comandos do bot\n"
+        "👤 /perfil : Exibe seu endereço cadastrado para recebimento\n"
     )
 
 
