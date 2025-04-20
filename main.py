@@ -8,14 +8,13 @@ from db import (save_ln_address, get_ln_address, get_username_ln_address_total_c
                 check_in, clear_checkins, count_checkins, is_checked)
 from scheduler.asyncio import Scheduler
 from scheduler.trigger import *
-from datetime import timezone, timedelta, time, date, datetime
+from datetime import timezone, timedelta, time, datetime
 from payment import send_prize, is_valid_ln_address
 
 bot = Bot(token=setup.BOT_TOKEN)
 dp = Dispatcher()
 
 sort_day_text = "Sexta"
-sort_day = 4  # De 0 - 6 onde 0 é Segunda e 6 é Domingo
 
 
 def is_valid_email(email: str) -> bool:
@@ -23,12 +22,12 @@ def is_valid_email(email: str) -> bool:
     return "@" in addr and "." in addr
 
 
-def next_saturday():
-    today = date.today()
-    days_until_saturday = (sort_day - today.weekday()) % 7
-    if days_until_saturday == 0:
-        days_until_saturday = 7
-    result = today + timedelta(days=days_until_saturday)
+def next_draw_day():
+    today = datetime.now()
+    days_until = (setup.draw_day - today.weekday()) % 7
+    if days_until == 0 and today.hour >= setup.draw_time:
+        days_until = 7
+    result = today + timedelta(days=days_until)
     return result.day
 
 
@@ -66,7 +65,7 @@ async def link_command(message: Message):
 @dp.message(Command("info"))
 async def info_command(message: Message):
     msg = ("⚠️INFORMAÇÕES | FREE SATS\n"
-           f"🗓 Sorteio {sort_day_text}, dia {next_saturday()} às 20:00 UTC:\n"
+           f"🗓 Sorteio {sort_day_text}, dia {next_draw_day()} às 20:00 UTC:\n"
            f"👥 Número de participantes: {count_checkins()}\n\n"
            f"⚡️Prêmio: {setup.prize_amount} sats\n"
            "\n---\n\n"
@@ -116,7 +115,7 @@ async def check_in_command(message: Message):
             "🎉 Parabens!\n"
             f"🤑 Agora você está participando do sorteio "
             f"semanal valendo {setup.prize_amount} sats!\n"
-            f"🗓 Acontecerá no proximo {sort_day_text}, dia {next_saturday()} às 20:00 UTC"
+            f"🗓 Acontecerá no proximo {sort_day_text}, dia {next_draw_day()} às 20:00 UTC"
         )
     else:
         await message.reply(

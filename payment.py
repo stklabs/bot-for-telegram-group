@@ -1,5 +1,5 @@
 import asyncio
-from nostr_sdk import (NostrWalletConnectUri, Nwc, PayInvoiceRequest, LookupInvoiceRequest)
+from nostr_sdk import (NostrWalletConnectUri, Nwc, PayInvoiceRequest)
 from settings import setup
 
 import aiohttp
