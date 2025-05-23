@@ -1,15 +1,19 @@
-from aiogram import Bot, Dispatcher
-from aiogram.types import Message
-from aiogram.filters import Command
 import asyncio
-from settings import setup
+import os
+from datetime import timezone, timedelta, time, datetime
 from email.utils import parseaddr
-from db import (save_ln_address, get_ln_address, get_username_ln_address_total_check_in,
-                check_in, clear_checkins, count_checkins, is_checked)
+from tempfile import NamedTemporaryFile
+
+from aiogram import Bot, Dispatcher
+from aiogram.filters import Command
+from aiogram.types import Message, FSInputFile
 from scheduler.asyncio import Scheduler
 from scheduler.trigger import *
-from datetime import timezone, timedelta, time, datetime
+
+from db import (save_ln_address, get_ln_address, get_username_ln_address_total_check_in,
+                check_in, clear_checkins, count_checkins, is_checked, get_all_users)
 from payment import send_prize, is_valid_ln_address
+from settings import setup
 
 bot = Bot(token=setup.BOT_TOKEN)
 dp = Dispatcher()
@@ -146,6 +150,20 @@ async def bot_command(message: Message):
         f"Olá {first_name}! 👋\n"
         "⌨️ Use /comandos para ver os comandos do bot!"
     )
+
+
+@dp.message(Command("admin"))
+async def bot_command(message: Message):
+    texto = message.text.lower().split()
+    if 'get_users' in texto:
+        with NamedTemporaryFile(mode='w+', suffix='.txt', delete=False) as tmp:
+            tmp.write('lnaddress; username;\n')
+            for user in get_all_users():
+                tmp.write(f'{user.ln_address}; {user.username}\n')
+            tmp.seek(0)  # Rewind to read
+            file = tmp.name
+            await message.answer_document(FSInputFile(tmp.name))
+        os.unlink(file)
 
 
 async def sort():

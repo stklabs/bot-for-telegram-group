@@ -1,9 +1,10 @@
 import asyncio
-from nostr_sdk import (NostrWalletConnectUri, Nwc, PayInvoiceRequest)
-from settings import setup
 
 import aiohttp
 from aiohttp.client_exceptions import *
+from nostr_sdk import (NostrWalletConnectUri, Nwc, PayInvoiceRequest)
+
+from settings import setup
 
 
 async def is_valid_ln_address(ln_address: str) -> bool:

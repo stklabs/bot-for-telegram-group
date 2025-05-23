@@ -40,6 +40,13 @@ def get_ln_address(user_id: int):
     return user.ln_address if user else None
 
 
+def get_all_users() -> list[User]:
+    session = SessionLocal()
+    users = session.query(User).all()
+    session.close()
+    return users if users else []
+
+
 def get_random_ln_address():
     session = SessionLocal()
     result = session.query(User.ln_address).filter(
